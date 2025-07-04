@@ -1005,16 +1005,7 @@
             }
         });
     </script>
-    <script>
-// Força recarregamento do cache a cada 1 hora
-const CACHE_VERSION = 1.2;
-localStorage.setItem('cache_version', CACHE_VERSION);
-
-if(localStorage.getItem('cache_version') !== CACHE_VERSION) {
-    localStorage.setItem('cache_version', CACHE_VERSION);
-    window.location.reload(true);
-}
-    </script>
+    
     <!-- Font Awesome for icons -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 </body>
