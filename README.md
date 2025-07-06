@@ -22,7 +22,7 @@ A free web app that helps musicians and content creators synchronize song lyrics
 
 ## Live Demo
 
-https://track-n10.github.io/lyricsync10/
+https://lyricsync10.vercel.app/
 
 ## Installation (Local Use)
 
