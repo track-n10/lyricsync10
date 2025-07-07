@@ -512,6 +512,44 @@
             color: var(--warning);
             font-weight: bold;
         }
+        .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.08);
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.social-link:hover {
+    background: #4cc9f0;
+    color: #1d3557;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.social-icon {
+    font-size: 1.8rem;
+}
+
+.social-icon.instagram { color: #E1306C; }
+.social-icon.tiktok { color: #69C9D0; }
+.social-icon.youtube { color: #FF0000; }
+.social-icon.spotify { color: #1DB954; }
+.social-icon.patreon { color: #FF424D; }
+.social-icon.substack { color: #FF6719; }
     </style>
 </head>
 <body>
@@ -632,47 +670,37 @@
             <h2 class="social-title">Follow Me for Updates & Support</h2>
             <p class="support-message">Your support helps me create more free tools for artists! Follow me on these platforms to stay updated with LyricSync10 and my music projects.</p>
             
-            <div class="social-grid">
-                <a href="https://www.instagram.com/track_n10" target="_blank" class="social-card">
-                    <div class="social-icon" style="color: #E1306C;">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                    <div class="social-name">Instagram</div>
-                    <div class="social-follow">Follow @track_n10</div>
-                </a>
-                
-                <a href="https://www.tiktok.com/@track_n10?_t=ZM-8xkg80gGGZi&_r=1" target="_blank" class="social-card">
-                    <div class="social-icon" style="color: #69C9D0;">
-                        <i class="fab fa-tiktok"></i>
-                    </div>
-                    <div class="social-name">TikTok</div>
-                    <div class="social-follow">Follow @track_n10</div>
-                </a>
-                
-                <a href="https://youtube.com/@track_n10?si=X728VaNUd1ehwmdF" target="_blank" class="social-card">
-                    <div class="social-icon" style="color: #FF0000;">
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                    <div class="social-name">YouTube</div>
-                    <div class="social-follow">Subscribe to my channel</div>
-                </a>
-                
-                <a href="https://open.spotify.com/artist/5zh2act5rl2vMBH7UJ8ndy?si=sdUoZ4e8RHO_F9RwZKIq8w" target="_blank" class="social-card">
-                    <div class="social-icon" style="color: #1DB954;">
-                        <i class="fab fa-spotify"></i>
-                    </div>
-                    <div class="social-name">Spotify</div>
-                    <div class="social-follow">Stream my music</div>
-                </a>
-                
-                <a href="https://substack.com/@trackn10?utm_source=share&utm_medium=android&r=5zj4bj" target="_blank" class="social-card">
-                    <div class="social-icon" style="color: #FF6719;">
-                        <i class="fas fa-newspaper"></i>
-                    </div>
-                    <div class="social-name">Substack</div>
-                    <div class="social-follow">Read my newsletter</div>
-                </a>
-            </div>
+<div class="social-links">
+    <a href="https://www.instagram.com/track_n10" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-instagram social-icon instagram"></i>
+        <span class="social-name">Instagram</span>
+    </a>
+    
+    <a href="https://www.tiktok.com/@track_n10?_t=ZM-8xkg80gGGZi&amp;_r=1" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-tiktok social-icon tiktok"></i>
+        <span class="social-name">TikTok</span>
+    </a>
+    
+    <a href="https://youtube.com/@track_n10?si=X728VaNUd1ehwmdF" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-youtube social-icon youtube"></i>
+        <span class="social-name">YouTube</span>
+    </a>
+    
+    <a href="https://open.spotify.com/artist/5zh2act5rl2vMBH7UJ8ndy?si=sdUoZ4e8RHO_F9RwZKIq8w" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-spotify social-icon spotify"></i>
+        <span class="social-name">Spotify</span>
+    </a>
+    
+    <a href="https://patreon.com/TRACK_N10?utm_medium=unknown&amp;utm_source=join_link&amp;utm_campaign=creatorshare_creator&amp;utm_content=copyLink" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-patreon social-icon patreon"></i>
+        <span class="social-name">Patreon</span>
+    </a>
+    
+    <a href="https://substack.com/@trackn10?utm_source=share&amp;utm_medium=android&amp;r=5zj4bj" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fas fa-newspaper social-icon substack"></i>
+        <span class="social-name">Substack</span>
+    </a>
+</div>
             
             <p class="support-message">Every follow, like, and share helps me continue creating tools like LyricSync10. <span class="support-highlight">Thank you for your support!</span></p>
         </div>
