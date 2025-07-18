@@ -21,15 +21,57 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><path d=%22M30 30 L70 30 L70 70 L30 70 Z%22 fill=%22none%22 stroke=%22%234cc9f0%22 stroke-width=%228%22/><path d=%22M40 40 L40 60 L50 50 L60 40 L60 60%22 fill=%22none%22 stroke=%22white%22 stroke-width=%224%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
     
     <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --success: #4cc9f0;
-            --dark: #1d3557;
-            --light: #f8f9fa;
-            --danger: #e63946;
-            --warning: #ffb703;
-        }
+        /* Adicione esta nova cor no :root */
+:root {
+    --music: #9c27b0;
+    --primary: #4361ee;
+    --secondary: #3f37c9;
+    --success: #4cc9f0;
+    --dark: #1d3557;
+    --light: #f8f9fa;
+    --danger: #e63946;
+    --warning: #ffb703;
+}
+
+/* Estilos para o botão de música */
+.btn-music {
+    background: var(--music);
+}
+
+.btn-music:hover {
+    background: #7b1fa2;
+}
+
+/* Container para os marcadores de música */
+.music-markers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+/* Estilo de cada marcador */
+.marker-item {
+    background: rgba(156, 39, 176, 0.3);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Explicação sobre o marcador de música */
+.music-explanation {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(156, 39, 176, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid var(--music);
+}
         
         * {
             margin: 0;
@@ -109,6 +151,7 @@
         
         .panel {
             background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 25px;
@@ -231,8 +274,8 @@
             height: 10px;
             border-radius: 5px;
             margin: 10px 0;
-            appearance: none;
             -webkit-appearance: none;
+            appearance: none;
         }
         
         progress::-webkit-progress-bar {
@@ -550,6 +593,9 @@
 .social-icon.spotify { color: #1DB954; }
 .social-icon.patreon { color: #FF424D; }
 .social-icon.substack { color: #FF6719; }
+    #audio-info {
+        display: none;
+    }
     </style>
 </head>
 <body>
@@ -571,6 +617,8 @@
                 <li>Paste or edit the song lyrics in the editor</li>
                 <li>Click <span class="highlight">Start Synchronization</span> and play the audio</li>
                 <li>Click each lyric line at the exact moment it starts in the song</li>
+                <!-- ADICIONE ESTE NOVO PASSO -->
+                <li>For instrumental parts, click the <span class="highlight">Music Marker</span> button</li>
                 <li>When finished, click <span class="highlight">Generate SRT</span> to download your synced file</li>
             </ol>
             <div class="feature-badge">100% Free</div>
@@ -592,10 +640,10 @@
                     <button class="btn" id="browse-audio">
                         <i class="fas fa-folder-open"></i> Select File
                     </button>
-                    <input type="file" id="audio-file" accept="audio/*" hidden>
+                <div id="audio-info" class="file-info">
                 </div>
                 
-                <div id="audio-info" class="file-info" style="display: none;">
+                <div id="audio-info" class="file-info">
                     <div>
                         <span>File:</span>
                         <span id="audio-filename"></span>
@@ -627,12 +675,22 @@
                     <button class="btn btn-success" id="start-sync">
                         <i class="fas fa-sync-alt"></i> Start Synchronization
                     </button>
+                    <button class="btn btn-music" id="music-marker">
+                         <i class="fas fa-music"></i> Music Marker
+                    </button>
                     <button class="btn btn-danger" id="reset-btn">
                         <i class="fas fa-redo"></i> Reset All
                     </button>
                 </div>
-                
-                <div class="status-bar" id="sync-status" style="display: none;">
+                <div class="music-explanation">
+                    <p><i class="fas fa-info-circle"></i> Use the <strong>Music Marker</strong> button to mark instrumental parts. This will add "[Music]" in your SRT file during these intervals.</p>
+                </div>
+
+<!-- ADICIONE ESTE CONTAINER PARA OS MARCADORES -->
+                <div id="music-markers" class="music-markers">
+    <!-- Music markers will appear here -->
+                </div>
+                <div class="status-bar" id="sync-status">
                     <span><i class="fas fa-sync-alt"></i> Synchronization in progress</span>
                     <span id="sync-progress">0/0 lines synced</span>
                 </div>
@@ -646,7 +704,7 @@
                 
                 <textarea class="lyrics-editor" id="lyrics-editor" placeholder="Paste your song lyrics here...&#10;Put each lyric line on a separate line.&#10;&#10;Example:&#10;This is the first line of the song&#10;This is the second line of the song&#10;And this is the third line..."></textarea>
                 
-                <div class="lyrics-container" id="lyrics-container" style="display: none;">
+                <div class="lyrics-container" id="lyrics-container">
                     <!-- Lyric lines will appear here -->
                 </div>
                 
@@ -739,8 +797,12 @@
             const srtPreview = document.getElementById('srt-preview');
             const syncStatus = document.getElementById('sync-status');
             const syncProgress = document.getElementById('sync-progress');
+            const musicMarkerBtn = document.getElementById('music-marker');
+            const musicMarkersContainer = document.getElementById('music-markers');
             
             // State variables
+            // Adicione esta variável no início com as outras variáveis de estado
+            let musicMarkers = []; // Array para armazenar os marcadores de música
             let isSyncing = false;
             let lyrics = [];
             let syncedLyrics = [];
@@ -848,7 +910,7 @@
                     alert('Please enter song lyrics in the editor.');
                     return;
                 }
-                
+                musicMarkers = [];
                 lyrics = rawLyrics.split('\n').filter(line => line.trim() !== '');
                 syncedLyrics = [];
                 
@@ -944,21 +1006,51 @@
             
             // Generate SRT content
             function generateSRTContent() {
-                if (syncedLyrics.length === 0) return '';
+                if (syncedLyrics.length === 0 && musicMarkers.length === 0) return '';
+                
+                // Create combined events array
+                let events = [];
+                
+                // Add synced lyrics
+                syncedLyrics.forEach((lyric, index) => {
+                    if (lyric) {
+                        events.push({
+                            time: lyric.startTime,
+                            type: 'lyric',
+                            text: lyric.text,
+                            index: index
+                        });
+                    }
+                });
+                
+                // Add music markers
+                musicMarkers.forEach(time => {
+                    events.push({
+                        time: time,
+                        type: 'music',
+                        text: '[Music]'
+                    });
+                });
+                
+                // Sort by time
+                events.sort((a, b) => a.time - b.time);
                 
                 let srtContent = '';
                 let subtitleIndex = 1;
                 
-                for (let i = 0; i < syncedLyrics.length; i++) {
-                    if (!syncedLyrics[i]) continue;
+                for (let i = 0; i < events.length; i++) {
+                    const event = events[i];
+                    let endTime;
                     
-                    const startTime = syncedLyrics[i].startTime;
-                    const endTime = i < syncedLyrics.length - 1 && syncedLyrics[i+1] ? 
-                        syncedLyrics[i+1].startTime : startTime + 5; // 5 seconds if last line
+                    if (i < events.length - 1) {
+                        endTime = events[i + 1].time;
+                    } else {
+                        endTime = event.time + 5; // 5 seconds if last event
+                    }
                     
                     srtContent += `${subtitleIndex}\n`;
-                    srtContent += `${formatTimeSrt(startTime)} --> ${formatTimeSrt(endTime)}\n`;
-                    srtContent += `${syncedLyrics[i].text}\n\n`;
+                    srtContent += `${formatTimeSrt(event.time)} --> ${formatTimeSrt(endTime)}\n`;
+                    srtContent += `${event.text}\n\n`;
                     
                     subtitleIndex++;
                 }
@@ -1022,6 +1114,9 @@
                 syncedLyrics = [];
                 generateSrtBtn.disabled = true;
                 syncStatus.style.display = 'none';
+                musicMarkers = [];
+                musicMarkersContainer.style.display = 'none';
+                musicMarkersContainer.innerHTML = '';
                 
                 // Remove classes from verses
                 const verses = document.querySelectorAll('.verse');
@@ -1045,7 +1140,45 @@
                 
                 return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')},${ms.toString().padStart(3, '0')}`;
             }
-        });
+            // Adicione após os outros event listeners
+        musicMarkerBtn.addEventListener('click', () => {
+            if (!isSyncing) {
+                alert('Please start synchronization first.');
+                return;
+            }
+            
+            const currentTime = audioPlayer.currentTime;
+            musicMarkers.push(currentTime);
+            
+            // Mostrar marcadores na UI
+            displayMusicMarkers();
+            
+            // Feedback visual
+            const originalClass = musicMarkerBtn.className;
+            musicMarkerBtn.className = 'btn btn-success';
+            setTimeout(() => {
+                musicMarkerBtn.className = originalClass;
+            }, 300);
+    // Adicione esta nova função
+             function displayMusicMarkers() {
+            musicMarkersContainer.innerHTML = '';
+            musicMarkersContainer.style.display = 'flex';
+            
+            musicMarkers.forEach((marker, index) => {
+                const markerEl = document.createElement('div');
+                markerEl.className = 'marker-item';
+                markerEl.innerHTML = `<i class="fas fa-music"></i> ${formatTime(marker)}`;
+                musicMarkersContainer.appendChild(markerEl);
+            });
+            
+            if (musicMarkers.length === 0) {
+                musicMarkersContainer.style.display = 'none';
+            }
+        }
+});
+
+}); // <-- This closes the DOMContentLoaded event listener
+
     </script>
     
     <!-- Font Awesome for icons -->
